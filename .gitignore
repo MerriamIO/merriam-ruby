@@ -1,4 +1,7 @@
 *.gem
+Gemfile.lock
+doc
+tmp
 *.rbc
 /.config
 /coverage/
