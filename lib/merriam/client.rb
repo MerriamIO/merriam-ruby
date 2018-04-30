@@ -19,8 +19,8 @@ module Merriam
     end
 
     def detect(t)
-      char_limit(t.join)
-      resp = HTTPClient.post("#{BASE_URL}/detect.json", t.to_json, headers)
+      char_limit([t].flatten.join)
+      resp = HTTPClient.post("#{BASE_URL}/detect.json", { t: [t].flatten }.to_json, headers)
       body = JSON.parse(resp.body)
       resp.status_code.eql?(200) ? [body].flatten.map { |b| Response.new(b) } : body
     end
@@ -44,7 +44,7 @@ module Merriam
     def translate_url(url, language_code)
       str = open(url).read
       char_limit(str)
-      data = {'t' => html, 'c' => language_code}
+      data = {'t' => str, 'c' => language_code}
       resp = HTTPClient.post("#{BASE_URL}/translate_html.json", data.to_json, headers)
       body = JSON.parse(resp.body)
       resp.status_code.eql?(200) ? TranslateText.new(body) : body
@@ -59,7 +59,7 @@ module Merriam
     end
 
     def char_limit(str)
-      puts 'Character limit is 31250' if str.size > _31250
+      puts 'Character limit is 31250' if str.size > 312_50
     end
   end
 end
